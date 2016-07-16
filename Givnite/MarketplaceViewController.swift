@@ -23,7 +23,7 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
     
     var bookNameArray = [String]()
     var bookPriceArray = [String]()
-    var userImageArray = [UIImage]()
+    var userArray = [String]()
     
     
     
@@ -111,7 +111,6 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                 
                 timeArray = timeArray.sort().reverse()
                 
-                print(timeArray)
                 
                 for time in timeArray {
                     for key in itemDictionary.allKeys {
@@ -119,13 +118,20 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                             if let time2 = keyDictionary["time"]{
                                 if time == time2 as! Int {
                                     self.imageNameArray.append("\(key)")
-                                    if let bookName = keyDictionary["book name"] as? String {
-                                        self.bookNameArray.append(bookName)
-                                    }
                                 }
                             }
-                        }
+                            if let bookName = keyDictionary["book name"] as? String {
+                                self.bookNameArray.append(bookName)
+                            }
+                            if let bookPrice = keyDictionary["price"] as? String {
+                                self.bookPriceArray.append(bookPrice)
+                            }
+                            if let userID = keyDictionary["user"] as? String {
+                                self.userArray.append(userID)
+                            }
 
+                        }
+                            
                     }
                 }
                 
@@ -149,13 +155,20 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
     
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(self.imageNameArray)
         return self.imageNameArray.count
     }
     
     
     
     var imageCache = [String:UIImage] ()
+    
+    var userImageCache = [String:UIImage] ()
+    
+    var priceCache = [String:String]()
+    
+    var bookCache = [String:String]()
+    
+    
 
     
     
@@ -171,13 +184,14 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
             
             if let image = imageCache[imageName]  {
                 cell.itemImageView.image = image
+                
             }
                 
             else {
                 
-                var profilePicRef = storageRef.child(imageName).child("\(imageName).jpg")
+                var imagesRef = storageRef.child(imageName).child("\(imageName).jpg")
                 //sets the image on profile
-                profilePicRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
+                imagesRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
                     if (error != nil) {
                         print ("File does not exist")
                         return
@@ -192,8 +206,64 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                             })
                         }
                     }
-                    }.resume()
+                }.resume()
+ 
             }
+ 
+        
+            
+            if let userImage = userImageCache[imageName] {
+                cell.profilePicView.image = userImage
+            }
+
+            else {
+                
+                let userID = userArray[indexPath.row]
+                var profilePicRef = storageRef.child(userID).child("profile_pic.jpg")
+                
+                print(userID)
+                //sets the image on profile
+                profilePicRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
+                    if (error != nil) {
+                        print ("File does not exist")
+                        return
+                    } else {
+                        if (data != nil){
+                            let imageToCache = UIImage(data:data!)
+                            self.userImageCache[imageName] = imageToCache
+                            dispatch_async(dispatch_get_main_queue(),{
+                                cell.profilePicView.image = imageToCache
+                            })
+                        }
+                    }
+                }.resume()
+            }
+ 
+ 
+
+            
+            if let bookName = bookCache[imageName] {
+                cell.bookName.text = bookName
+            }
+            
+            
+            else {
+                let bookNameToCache = bookNameArray[indexPath.row]
+                self.bookCache[imageName] = bookNameToCache
+                 cell.bookName.text = bookNameToCache
+            }
+            
+            if let bookPrice = priceCache[imageName] {
+                cell.bookPrice.text = bookPrice
+            }
+            
+            else {
+                let bookPriceToCache = bookPriceArray[indexPath.row]
+                self.priceCache[imageName] = bookPriceToCache
+                cell.bookPrice.text = bookPriceToCache
+                
+            }
+ 
         }
         return cell
     }

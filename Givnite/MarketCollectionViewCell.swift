@@ -11,10 +11,11 @@ import UIKit
 class MarketCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var itemImageView: UIImageView!
-    @IBOutlet weak var profileItemView: UIImageView!
+    @IBOutlet weak var profilePicView: UIImageView!
     
-    @IBOutlet weak var bookName: UITextField!
-    @IBOutlet weak var bookPrice: UITextField!
+    @IBOutlet weak var bookName: UILabel!
+
+    @IBOutlet weak var bookPrice: UILabel!
     
     
 }
