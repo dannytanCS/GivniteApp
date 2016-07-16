@@ -137,8 +137,8 @@ class Camera: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     }
     
     override func viewDidAppear(animated: Bool) {
-        // super.viewDidAppear(animated)
-        // previewLayer!.frame  = imageView.bounds
+        super.viewDidAppear(animated)
+        previewLayer!.frame  = imageView.bounds
         
     }
     
