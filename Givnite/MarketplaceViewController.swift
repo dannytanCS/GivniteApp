@@ -21,6 +21,10 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
     var imageNameArray = [String]()
     var imageArray = [UIImage]()
     
+    var bookNameArray = [String]()
+    var bookPriceArray = [String]()
+    var userImageArray = [UIImage]()
+    
     
     
     
@@ -105,7 +109,9 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                 }
                 
                 
-                timeArray.sort()
+                timeArray = timeArray.sort().reverse()
+                
+                print(timeArray)
                 
                 for time in timeArray {
                     for key in itemDictionary.allKeys {
@@ -113,6 +119,9 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                             if let time2 = keyDictionary["time"]{
                                 if time == time2 as! Int {
                                     self.imageNameArray.append("\(key)")
+                                    if let bookName = keyDictionary["book name"] as? String {
+                                        self.bookNameArray.append(bookName)
+                                    }
                                 }
                             }
                         }
@@ -145,6 +154,11 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     
+    
+    var imageCache = [String:UIImage] ()
+
+    
+    
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as!
@@ -152,25 +166,34 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
         
         
         if let imageName = self.imageNameArray[indexPath.row] as? String {
+            cell.itemImageView.image = nil
             
+            
+            if let image = imageCache[imageName]  {
+                cell.itemImageView.image = image
+            }
                 
-            var profilePicRef = storageRef.child(imageName).child("\(imageName).jpg")
-            //sets the image on profile
-            profilePicRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
-                if (error != nil) {
-                    print ("File does not exist")
-                    return
-                } else {
-                    if (data != nil){
-                        let imageStored = UIImage(data:data!)
-                        dispatch_async(dispatch_get_main_queue(),{
-                            self.imageArray[indexPath.row] = imageStored!
-                            cell.itemImageView.image = imageStored
-                                
-                        })
+            else {
+                
+                var profilePicRef = storageRef.child(imageName).child("\(imageName).jpg")
+                //sets the image on profile
+                profilePicRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
+                    if (error != nil) {
+                        print ("File does not exist")
+                        return
+                    } else {
+                        if (data != nil){
+                            let imageToCache = UIImage(data:data!)
+                            self.imageCache[imageName] = imageToCache
+                            dispatch_async(dispatch_get_main_queue(),{
+                                cell.itemImageView.image = imageToCache
+                                self.imageArray[indexPath.row] = imageToCache!
+                                    
+                            })
+                        }
                     }
-                }
-            }.resume()
+                    }.resume()
+            }
         }
         return cell
     }
