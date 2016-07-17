@@ -12,9 +12,11 @@ import FirebaseStorage
 
 class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource  {
 
+
     @IBOutlet weak var collectionView: UICollectionView!
     
-    
+  
+
     let storageRef = FIRStorage.storage().referenceForURL("gs://givniteapp.appspot.com")
     let dataRef = FIRDatabase.database().referenceFromURL("https://givniteapp.firebaseio.com/")
     
@@ -230,6 +232,7 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                 profilePicRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
                     if (error != nil) {
                         print ("File does not exist")
+                        
                         return
                     } else {
                         if (data != nil){
@@ -248,6 +251,7 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
             
             if let bookName = bookCache[imageName] {
                 cell.bookName.text = bookName
+            
             }
             
             
