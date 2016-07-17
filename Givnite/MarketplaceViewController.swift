@@ -118,22 +118,26 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                             if let time2 = keyDictionary["time"]{
                                 if time == time2 as! Int {
                                     self.imageNameArray.append("\(key)")
-                                }
-                            }
-                            if let bookName = keyDictionary["book name"] as? String {
-                                self.bookNameArray.append(bookName)
-                            }
-                            if let bookPrice = keyDictionary["price"] as? String {
-                                self.bookPriceArray.append(bookPrice)
-                            }
-                            if let userID = keyDictionary["user"] as? String {
-                                self.userArray.append(userID)
-                            }
+                                    if let bookName = keyDictionary["book name"] as? String {
+                                        self.bookNameArray.append(bookName)
+                                    }
+                                    if let bookPrice = keyDictionary["price"] as? String {
+                                        self.bookPriceArray.append(bookPrice)
+                                    }
+                                    if let userID = keyDictionary["user"] as? String {
+                                        self.userArray.append(userID)
+                                    }
 
+                                }
+                            
+
+                            }
                         }
                             
                     }
                 }
+                
+                print(self.bookNameArray)
                 
                 for index in 0..<self.imageNameArray.count {
                     self.imageArray.append(UIImage(named: "Examples")!)
