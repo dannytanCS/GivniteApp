@@ -7,18 +7,23 @@
 //
 
 import UIKit
+import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 
-class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource  {
+class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate  {
 
 
     @IBOutlet weak var collectionView: UICollectionView!
+    
+    @IBOutlet weak var searchBarText: UISearchBar!
     
   
 
     let storageRef = FIRStorage.storage().referenceForURL("gs://givniteapp.appspot.com")
     let dataRef = FIRDatabase.database().referenceFromURL("https://givniteapp.firebaseio.com/")
+    
+    let user = FIRAuth.auth()?.currentUser
     
     var imageNameArray = [String]()
     var imageArray = [UIImage]()
@@ -27,9 +32,7 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
     var bookPriceArray = [String]()
     var userArray = [String]()
     
-    
-    
-    
+    var firstTimeUse: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +41,39 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
         swipeLeft.direction = UISwipeGestureRecognizerDirection.Left
         self.view.addGestureRecognizer(swipeLeft)
         
+        searchBarText.delegate = self
         
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        print("searchText \(searchBar.text)")
+        dataRef.child("user").child(user!.uid).child("query").setValue(searchBarText.text)
+        searchBarText.resignFirstResponder()
         
+        updateTheCell()
+    }
+
+    
+    func updateTheCell(){
+        dataRef.child("user").child(user!.uid).child("queryres").observeSingleEventOfType(.Value, withBlock: { (snapshot)
+            in
+            
+            if let topSearches = snapshot.value! as? NSArray {
+                self.imageNameArray.removeAll()
+                self.imageArray.removeAll()
+                self.bookNameArray.removeAll()
+                self.bookPriceArray.removeAll()
+                for imageName in topSearches {
+                    self.imageNameArray.append(imageName as! String)
+                }
+            }
+
+            self.firstTimeUse = false
+            self.viewDidLoad()
+        })
     }
     
     
@@ -93,51 +127,57 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
             in
             
             
+            print(self.firstTimeUse)
+            
             //adds image name from firebase database to an array
             
             if let itemDictionary = snapshot.value! as? NSDictionary {
                 
-                
-                var timeArray = [Int]()
-                
-               
-                for key in itemDictionary.allKeys {
-                    if let keyDictionary = itemDictionary["\(key)"] as? NSDictionary {
-                        if let time = keyDictionary["time"] {
-                            let time2 = time as! Int
-                            timeArray.append(time2)
-                        }
-                    }
-                }
-                
-                
-                timeArray = timeArray.sort().reverse()
-                
-                
-                for time in timeArray {
+                if self.firstTimeUse == true {
+                   
+                    var timeArray = [Int]()
+                    
+                    
                     for key in itemDictionary.allKeys {
                         if let keyDictionary = itemDictionary["\(key)"] as? NSDictionary {
-                            if let time2 = keyDictionary["time"]{
-                                if time == time2 as! Int {
-                                    self.imageNameArray.append("\(key)")
-                                    if let bookName = keyDictionary["book name"] as? String {
-                                        self.bookNameArray.append(bookName)
-                                    }
-                                    if let bookPrice = keyDictionary["price"] as? String {
-                                        self.bookPriceArray.append(bookPrice)
-                                    }
-                                    if let userID = keyDictionary["user"] as? String {
-                                        self.userArray.append(userID)
-                                    }
-
-                                }
-                            
-
+                            if let time = keyDictionary["time"] {
+                                let time2 = time as! Int
+                                timeArray.append(time2)
                             }
                         }
-                            
                     }
+                    
+                    
+                    timeArray = timeArray.sort().reverse()
+                    
+                    
+                    for time in timeArray {
+                        for key in itemDictionary.allKeys {
+                            if let keyDictionary = itemDictionary["\(key)"] as? NSDictionary {
+                                if let time2 = keyDictionary["time"]{
+                                    if time == time2 as! Int {
+                                        self.imageNameArray.append("\(key)")
+                                        if let bookName = keyDictionary["book name"] as? String {
+                                            self.bookNameArray.append(bookName)
+                                        }
+                                        if let bookPrice = keyDictionary["price"] as? String {
+                                            self.bookPriceArray.append(bookPrice)
+                                        }
+                                        if let userID = keyDictionary["user"] as? String {
+                                            self.userArray.append(userID)
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                            }
+                            
+                        }
+                    }
+
                 }
+                
+                
                 
            
                 
@@ -309,4 +349,8 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
         }
     }
 
+    
+    
+    
+    
 }

@@ -395,6 +395,13 @@ class ItemViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if(text == "\n") {
             textView.resignFirstResponder()
+            if bookName.text != "" && bookPrice.text != "" {
+                doneButton.hidden = false
+            }
+            
+            if bookName.text == "" || bookPrice.text == "" {
+                doneButton.hidden = true
+            }
             return false
         }
         return true

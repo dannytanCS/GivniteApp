@@ -805,6 +805,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="collectionView" destination="jiq-Ob-Tbp" id="Ad4-Xl-Fv7"/>
+                        <outlet property="searchBarText" destination="9Xl-1B-9dB" id="F4F-hB-Tmm"/>
                         <segue destination="Tnf-I5-fWN" kind="modal" identifier="marketEnlarge" id="YfD-1C-9gm"/>
                     </connections>
                 </viewController>

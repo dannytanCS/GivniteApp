@@ -109,6 +109,7 @@ class DescriptionViewController: UIViewController, UITextFieldDelegate, UITextVi
                 self.dismissViewControllerAnimated(true, completion: nil)
                 self.imageList.append(image!)
                 self.maxImages += 1
+                self.pageControl.numberOfPages += 1
                 self.viewDidLoad()
             }
         }
@@ -208,6 +209,13 @@ class DescriptionViewController: UIViewController, UITextFieldDelegate, UITextVi
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if(text == "\n") {
             textView.resignFirstResponder()
+            if bookName.text != "" && bookPrice.text != "" {
+                doneButton.hidden = false
+            }
+            
+            if bookName.text == "" || bookPrice.text == "" {
+                doneButton.hidden = true
+            }
             return false
         }
         return true
@@ -221,6 +229,7 @@ class DescriptionViewController: UIViewController, UITextFieldDelegate, UITextVi
         super.viewDidLoad()
         bookName.delegate = self
         bookDescription.delegate = self
+        bookPrice.delegate = self
         
         doneButton.hidden = true
         
