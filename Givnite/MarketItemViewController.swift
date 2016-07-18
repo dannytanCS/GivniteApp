@@ -34,6 +34,7 @@ class MarketItemViewController: UIViewController {
     var price: String?
     var name: String?
     var userID: String?
+    var bkdescription: String?
     
     
     var imageList = [UIImage]()
@@ -51,6 +52,7 @@ class MarketItemViewController: UIViewController {
         self.imageView.image = self.image
         self.bookName.text = self.name
         self.bookPrice.text = self.price
+        self.bookDescription.text = self.bkdescription
         
         
         databaseRef.child("user").child(userID!).child("name").observeSingleEventOfType(.Value, withBlock: { (snapshot)

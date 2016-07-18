@@ -31,6 +31,7 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
     var bookNameArray = [String]()
     var bookPriceArray = [String]()
     var userArray = [String]()
+    var descriptionArray = [String]()
     
     var firstTimeUse: Bool = true
     
@@ -66,6 +67,8 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                 self.imageArray.removeAll()
                 self.bookNameArray.removeAll()
                 self.bookPriceArray.removeAll()
+                self.descriptionArray.removeAll()
+                self.imageCache.removeAll()
                 for imageName in topSearches {
                     self.imageNameArray.append(imageName as! String)
                 }
@@ -167,6 +170,10 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                                             self.userArray.append(userID)
                                         }
                                         
+                                        if let bookDescription  = keyDictionary["description"] as? String {
+                                            self.descriptionArray.append(bookDescription)
+                                        }
+                                        
                                     }
                                     
                                 }
@@ -176,27 +183,40 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                     }
 
                 }
-                
-                
-                
-           
-                
-                for index in 0..<self.imageNameArray.count {
-                    self.imageArray.append(UIImage(named: "Examples")!)
-                    self.bookNameArray.append("")
-                    self.bookPriceArray.append("")
-                    
+                else {
+                    for image in self.imageNameArray {
+                        if let keyDictionary = itemDictionary[image] as? NSDictionary {
+                            if let bookName = keyDictionary["book name"] as? String {
+                                self.bookNameArray.append(bookName)
+                            }
+                            if let bookPrice = keyDictionary["price"] as? String {
+                                self.bookPriceArray.append(bookPrice)
+                            }
+                            if let userID = keyDictionary["user"] as? String {
+                                self.userArray.append(userID)
+                            }
+                            if let bookDescription = keyDictionary["description"] as? String {
+                                self.descriptionArray.append(bookDescription)
+                            }
+                        
+                        }
+                    }
                 }
-        
-                
-            
-        
-                
-            
-                dispatch_async(dispatch_get_main_queue(),{
-                    self.collectionView.reloadData()
-                })
             }
+           
+            
+            for index in 0..<self.imageNameArray.count {
+                self.imageArray.append(UIImage(named: "Examples")!)
+            }
+        
+                
+            
+        
+                
+            
+            dispatch_async(dispatch_get_main_queue(),{
+                self.collectionView.reloadData()
+            })
         })
         
     }
@@ -230,7 +250,7 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
         if let imageName = self.imageNameArray[indexPath.row] as? String {
             cell.itemImageView.image = nil
             
-            
+           
             if let image = imageCache[imageName]  {
                 cell.itemImageView.image = image
                 
@@ -346,6 +366,8 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
             destinationVC.price = self.bookPriceArray[indexPath.row]
             
             destinationVC.userID = self.userArray[indexPath.row]
+            
+            destinationVC.bkdescription = self.descriptionArray[indexPath.row]
         }
     }
 
