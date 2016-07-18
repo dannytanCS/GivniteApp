@@ -139,14 +139,17 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                     }
                 }
                 
-                print(self.bookNameArray)
+           
                 
                 for index in 0..<self.imageNameArray.count {
                     self.imageArray.append(UIImage(named: "Examples")!)
+                    self.bookNameArray.append("")
+                    self.bookPriceArray.append("")
+                    
                 }
         
                 
-                print(self.imageNameArray)
+            
         
                 
             
@@ -227,7 +230,7 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
                 let userID = userArray[indexPath.row]
                 var profilePicRef = storageRef.child(userID).child("profile_pic.jpg")
                 
-                print(userID)
+               
                 //sets the image on profile
                 profilePicRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
                     if (error != nil) {
@@ -276,4 +279,34 @@ class MarketplaceViewController: UIViewController, UICollectionViewDelegate, UIC
         return cell
     }
     
+    
+    
+    
+    
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        self.performSegueWithIdentifier("marketEnlarge", sender: self)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "marketEnlarge" {
+            
+            let indexPaths = self.collectionView!.indexPathsForSelectedItems()!
+            let indexPath = indexPaths[0] as NSIndexPath
+            let destinationVC = segue.destinationViewController as! MarketItemViewController
+            
+            
+    
+            destinationVC.image = self.imageArray[indexPath.row]
+            
+            destinationVC.imageName = self.imageNameArray[indexPath.row]
+            
+            destinationVC.name = self.bookNameArray[indexPath.row]
+            
+            destinationVC.price = self.bookPriceArray[indexPath.row]
+            
+            destinationVC.userID = self.userArray[indexPath.row]
+        }
+    }
+
 }

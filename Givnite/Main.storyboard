@@ -680,7 +680,7 @@
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="jiq-Ob-Tbp">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="2" minimumInteritemSpacing="1" id="8Kv-2W-xkC">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="1" id="8Kv-2W-xkC">
                                     <size key="itemSize" width="180" height="232"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -724,18 +724,19 @@
                                                         <constraint firstAttribute="height" constant="44" id="QiF-3n-Amq"/>
                                                     </constraints>
                                                 </view>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f9c-Bd-kSl">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="f9c-Bd-kSl">
                                                     <rect key="frame" x="0.0" y="45" width="187" height="187"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="187" id="IWd-hI-iwh"/>
-                                                    </constraints>
                                                 </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="f9c-Bd-kSl" secondAttribute="bottom" id="0pF-NQ-Ghs"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="f9c-Bd-kSl" secondAttribute="trailing" constant="-15" id="7cV-tu-rG5"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="ABb-Rm-G7r" secondAttribute="trailing" constant="-8" id="NTy-pm-pb3"/>
+                                            <constraint firstItem="f9c-Bd-kSl" firstAttribute="top" secondItem="ABb-Rm-G7r" secondAttribute="bottom" constant="1" id="ejL-F5-jW8"/>
                                             <constraint firstItem="ABb-Rm-G7r" firstAttribute="leading" secondItem="CfM-W3-27l" secondAttribute="leadingMargin" constant="-8" id="gjr-2k-hAZ"/>
+                                            <constraint firstItem="f9c-Bd-kSl" firstAttribute="leading" secondItem="ABb-Rm-G7r" secondAttribute="leading" id="hZ8-MS-fTF"/>
                                             <constraint firstItem="ABb-Rm-G7r" firstAttribute="top" secondItem="CfM-W3-27l" secondAttribute="topMargin" constant="-8" id="sn0-jc-SoO"/>
                                         </constraints>
                                         <connections>
@@ -763,9 +764,11 @@
                             <constraint firstItem="jiq-Ob-Tbp" firstAttribute="top" secondItem="9Xl-1B-9dB" secondAttribute="bottom" id="lp0-V0-hfY"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="hqt-RS-0v8"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="collectionView" destination="jiq-Ob-Tbp" id="Ad4-Xl-Fv7"/>
+                        <segue destination="Tnf-I5-fWN" kind="modal" identifier="marketEnlarge" id="YfD-1C-9gm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="z97-nz-WR3" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1156,10 +1159,10 @@
             </objects>
             <point key="canvasLocation" x="2303.5" y="1452.5"/>
         </scene>
-        <!--View Controller-->
+        <!--Market Item View Controller-->
         <scene sceneID="vKG-2n-Yy4">
             <objects>
-                <viewController id="Tnf-I5-fWN" sceneMemberID="viewController">
+                <viewController id="Tnf-I5-fWN" customClass="MarketItemViewController" customModule="Givnite" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="5AK-OR-Qrn"/>
                         <viewControllerLayoutGuide type="bottom" id="4IC-RM-Jx1"/>
@@ -1205,7 +1208,8 @@
                                 <rect key="frame" x="15" y="28" width="12" height="18"/>
                                 <state key="normal" title="Back" image="Back Button"/>
                                 <connections>
-                                    <action selector="backButton:" destination="Tnf-I5-fWN" eventType="touchUpInside" id="8w5-ql-b2h"/>
+                                    <action selector="backButton:" destination="Tnf-I5-fWN" eventType="touchUpInside" id="GTt-Vj-8qG"/>
+                                    <segue destination="sEY-U2-bM3" kind="modal" identifier="goBack" id="qG4-99-uBB"/>
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O3z-Oe-tId">
@@ -1307,16 +1311,17 @@
                     <navigationItem key="navigationItem" id="nYD-uH-PUB"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
-                        <outlet property="bookDescription" destination="fCI-ZS-6Zx" id="7z9-l7-8e9"/>
-                        <outlet property="bookName" destination="9z7-5X-Bho" id="QyJ-wj-baI"/>
-                        <outlet property="bookPrice" destination="ipS-LB-qwy" id="nLQ-Ex-YZM"/>
-                        <outlet property="imageView" destination="78V-b6-JGw" id="c1K-RI-T7s"/>
-                        <outlet property="pageControl" destination="Avh-1M-Vks" id="Dsh-LP-lll"/>
+                        <outlet property="bookDescription" destination="fCI-ZS-6Zx" id="EjN-g1-qw9"/>
+                        <outlet property="bookName" destination="9z7-5X-Bho" id="Ldf-XF-nVa"/>
+                        <outlet property="bookPrice" destination="ipS-LB-qwy" id="TzK-z1-0pk"/>
+                        <outlet property="imageView" destination="78V-b6-JGw" id="i8W-Jd-Zo2"/>
+                        <outlet property="pageControl" destination="Avh-1M-Vks" id="Lrw-0W-bdI"/>
+                        <outlet property="sellerName" destination="5gs-Dx-HK3" id="ocg-RU-h5U"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VZN-ji-8Dx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="836.5" y="1257.5"/>
+            <point key="canvasLocation" x="700.5" y="1270.5"/>
         </scene>
     </scenes>
     <resources>

@@ -114,7 +114,7 @@ class ItemViewController: UIViewController, UINavigationControllerDelegate, UIIm
         
         databaseRef.child("marketplace").child(imageName!).observeSingleEventOfType(.Value, withBlock: { (snapshot)
             in
-                print(snapshot)
+            
                 // Get item value
                 let bookName = snapshot.value!["book name"] as! String
                 self.bookName.text = bookName

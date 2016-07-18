@@ -324,7 +324,7 @@ class DescriptionViewController: UIViewController, UITextFieldDelegate, UITextVi
                     self.pageControl.currentPage = 0
                 }
                 
-                print(imageIndex)
+        
                 
                 
                 imageView.image = imageList[imageIndex]

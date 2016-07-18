@@ -17,6 +17,7 @@
 		7EA0A9221D300A0100CD895E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7EA0A9211D300A0100CD895E /* Main.storyboard */; };
 		7EA150341D31AAC200B5E639 /* DescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA150331D31AAC200B5E639 /* DescriptionViewController.swift */; };
 		7EA8501A1D2ED94E00E05190 /* SchoolViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA850191D2ED94E00E05190 /* SchoolViewController.swift */; };
+		7ED2A7421D3BE42600478551 /* MarketItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ED2A7411D3BE42600478551 /* MarketItemViewController.swift */; };
 		7EE6232C1D2EC1A900B6DA60 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7EE6232B1D2EC1A900B6DA60 /* GoogleService-Info.plist */; };
 		7EF976CC1D304178000E22F8 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EF976CB1D304178000E22F8 /* Camera.swift */; };
 		B195C7340EF3FCD7EDFB24EC /* Pods_Givnite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A55E1D8C7000DBD506DD9075 /* Pods_Givnite.framework */; };
@@ -41,6 +42,7 @@
 		7EA0A9211D300A0100CD895E /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		7EA150331D31AAC200B5E639 /* DescriptionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptionViewController.swift; sourceTree = "<group>"; };
 		7EA850191D2ED94E00E05190 /* SchoolViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchoolViewController.swift; sourceTree = "<group>"; };
+		7ED2A7411D3BE42600478551 /* MarketItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketItemViewController.swift; sourceTree = "<group>"; };
 		7EE6232B1D2EC1A900B6DA60 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7EF976CB1D304178000E22F8 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		A55E1D8C7000DBD506DD9075 /* Pods_Givnite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Givnite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -124,6 +126,7 @@
 				7EA150331D31AAC200B5E639 /* DescriptionViewController.swift */,
 				7E42DF781D3A8B250074E8BC /* MarketplaceViewController.swift */,
 				7E64DFAF1D3AA4920087A700 /* MarketCollectionViewCell.swift */,
+				7ED2A7411D3BE42600478551 /* MarketItemViewController.swift */,
 				7EA0A9211D300A0100CD895E /* Main.storyboard */,
 				C44D0E371D277FDC00C8EC92 /* Assets.xcassets */,
 				C44D0E391D277FDC00C8EC92 /* LaunchScreen.storyboard */,
@@ -272,6 +275,7 @@
 				C44D0E311D277FDC00C8EC92 /* AppDelegate.swift in Sources */,
 				7EF976CC1D304178000E22F8 /* Camera.swift in Sources */,
 				C4F0FD871D2809BD00DD434B /* ZFRippleButton.swift in Sources */,
+				7ED2A7421D3BE42600478551 /* MarketItemViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

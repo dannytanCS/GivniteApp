@@ -193,6 +193,11 @@ class SchoolViewController: UIViewController, UITextFieldDelegate {
         return newLength <= 4
     }
     
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
     
     //MARK: School Info
     
