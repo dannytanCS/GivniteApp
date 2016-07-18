@@ -11,7 +11,7 @@ import FirebaseDatabase
 import FirebaseStorage
 import FirebaseAuth
 
-class ItemViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class ItemViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
     @IBOutlet weak var imageView: UIImageView!
     
@@ -24,6 +24,8 @@ class ItemViewController: UIViewController, UINavigationControllerDelegate, UIIm
     var imageName:String?
     
     
+    var imageDict = [UIImage:AnyObject]()
+    
     var imageList = [UIImage]()
     
     var imageNameList = [String]()
@@ -32,10 +34,9 @@ class ItemViewController: UIViewController, UINavigationControllerDelegate, UIIm
     
     var maxImages: Int = 0
     
-    @IBOutlet weak var bookPrice: UILabel!
-    
-    
-    @IBOutlet weak var bookName: UILabel!
+  
+    @IBOutlet weak var bookName: UITextField!
+    @IBOutlet weak var bookPrice: UITextField!
 
     
     @IBOutlet weak var bookDescription: UITextView!
@@ -52,10 +53,16 @@ class ItemViewController: UIViewController, UINavigationControllerDelegate, UIIm
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        
+        self.bookDescription.editable = false
+        self.bookPrice.userInteractionEnabled = false
+        self.bookName.userInteractionEnabled = false
         
         self.imageView.image = self.image
         
+        self.doneButton.hidden = true
+        self.bookName.delegate = self
+        self.bookPrice.delegate = self
+        self.bookDescription.delegate = self
         
         if imageNameList.count == 0 {
             databaseRef.child("marketplace").child(imageName!).child("images").observeSingleEventOfType(.Value, withBlock: { (snapshot)
@@ -69,14 +76,15 @@ class ItemViewController: UIViewController, UINavigationControllerDelegate, UIIm
                     let y = obj2 as! NSNumber
                     return x.compare(y)
                 }
-                
-                
+          
                 for key in sortKeys {
                     self.imageNameList.append("\(key)")
                 }
                 
-                for imagename in self.imageNameList {
-                
+                for image in itemDictionary {
+                    
+                    let imagename = image.key
+                    
                     let profilePicRef = self.storageRef.child(self.imageName!).child("\(imagename).jpg")
                     //sets the image on profile
                     profilePicRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
@@ -85,17 +93,28 @@ class ItemViewController: UIViewController, UINavigationControllerDelegate, UIIm
                         return
                         } else {
                             if (data != nil){
-                                self.imageList.append(UIImage(data:data!)!)
+                               
+                                self.imageDict[UIImage(data:data!)!] = image.value
                             }
-                            
                         }
+                        
+                        //change image dictionary into sorted image array
+                        var sortedTuples = self.imageDict.sort({ (a, b) in (a.1 as! Double) < (b.1 as! Double) })
+                        
+                        for tuple in sortedTuples {
+                            if sortedTuples.count == self.imageNameList.count {
+                                self.imageList.append(tuple.0)
+                            }
+                        }
+                        
+                        
                         self.maxImages  = self.imageList.count - 1
                         self.pageControl.currentPage = 0
                         self.pageControl.numberOfPages = self.maxImages + 1
 
-                    
                     }
                 }
+                
             })
         
         }
@@ -110,18 +129,26 @@ class ItemViewController: UIViewController, UINavigationControllerDelegate, UIIm
         self.view.addGestureRecognizer(swipeLeft)
         
         
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        view.addGestureRecognizer(tap)
         
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name: UIKeyboardWillHideNotification, object: nil)
         
         databaseRef.child("marketplace").child(imageName!).observeSingleEventOfType(.Value, withBlock: { (snapshot)
             in
             
                 // Get item value
-                let bookName = snapshot.value!["book name"] as! String
-                self.bookName.text = bookName
-                let bookDescription = snapshot.value!["description"] as! String
+            if let bookName = snapshot.value!["book name"] as? String {
+                    self.bookName.text = bookName
+            }
+            if let bookDescription = snapshot.value!["description"] as? String {
                 self.bookDescription.text = bookDescription
-                let bookPrice = snapshot.value!["price"] as! String
+            }
+            if let bookPrice = snapshot.value!["price"] as? String {
                 self.bookPrice.text = bookPrice
+            }
         })
     }
 
@@ -195,6 +222,7 @@ class ItemViewController: UIViewController, UINavigationControllerDelegate, UIIm
                 }
                                 
                 imageView.image =  imageList[imageIndex]
+                
                 
             case UISwipeGestureRecognizerDirection.Left:
                 print("User swiped Left")
@@ -307,10 +335,113 @@ class ItemViewController: UIViewController, UINavigationControllerDelegate, UIIm
         }
     }
     
+    
+    
+    
+    @IBOutlet weak var settingButton: UIButton!
+    
+    //changes the item's name, price and description
+    @IBAction func settingButtonClicked(sender: AnyObject) {
+        
+    
+            self.bookDescription.editable = true
+            self.bookPrice.userInteractionEnabled = true
+            self.bookName.userInteractionEnabled = true
+        
+        
+            doneButton.hidden = false
+            settingButton.hidden = true
+    
+    }
+    
+    //done editing item's name, price, and description
+    
+    
+    @IBOutlet weak var doneButton: UIButton!
+    
+    @IBAction func doneButtonClicked(sender: AnyObject) {
+        
+        self.bookDescription.editable = false
+        self.bookPrice.userInteractionEnabled = false
+        self.bookName.userInteractionEnabled = false
+        
+        self.databaseRef.child("marketplace").child(imageName!).child("book name").setValue(bookName.text)
+        self.databaseRef.child("marketplace").child(imageName!).child("price").setValue(bookPrice.text)
+        self.databaseRef.child("marketplace").child(imageName!).child("description").setValue(bookDescription.text)
+        
+        doneButton.hidden = true
+        settingButton.hidden = false
+    }
+    
+    
+    
+    
+    
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
+    }
+    
+    //hides keyboard when return is pressed for text field
+
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    
+    //hides keyboard when return is pressed for text view
+    
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        if(text == "\n") {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
+    }
+
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
+    //changes the keyboard
+    
+    
+    func keyboardWillHide(sender: NSNotification) {
+        let userInfo: [NSObject : AnyObject] = sender.userInfo!
+        let keyboardSize: CGSize = userInfo[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue.size
+        self.view.frame.origin.y += keyboardSize.height
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: self.view.window)
+    }
+    
+    //shift the screen when there is a keyboard
+    func keyboardWillShow(sender: NSNotification) {
+        
+        let userInfo: [NSObject : AnyObject] = sender.userInfo!
+        
+        let keyboardSize: CGSize = userInfo[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue.size
+        let offset: CGSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
+        
+        if keyboardSize.height == offset.height {
+            if self.view.frame.origin.y == 0 {
+                
+                self.view.frame.origin.y -= keyboardSize.height
+            }
+        } else {
+            
+            self.view.frame.origin.y += keyboardSize.height - offset.height
+        }
+    }
+
+
     
 
     /*

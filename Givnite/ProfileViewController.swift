@@ -33,6 +33,8 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     @IBOutlet weak var majorLabel: UILabel!
     
+    @IBOutlet weak var bioTextView: UITextView!
+    
     let storageRef = FIRStorage.storage().referenceForURL("gs://givniteapp.appspot.com")
     let dataRef = FIRDatabase.database().referenceFromURL("https://givniteapp.firebaseio.com/")
     let user = FIRAuth.auth()!.currentUser
@@ -54,12 +56,12 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate, UIColle
         self.profilePicture.layer.borderColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0).CGColor
         loadImages()
         schoolInfo()
-        
+        self.bioTextView.editable = false
+        self.doneButton.hidden = true
         
         var swipeRight = UISwipeGestureRecognizer(target: self, action: "swiped:")
         swipeRight.direction = UISwipeGestureRecognizerDirection.Right
         self.view.addGestureRecognizer(swipeRight)
-
         
     }
     
@@ -318,7 +320,32 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     
+    //checks user's bio
+    
+    @IBOutlet weak var changeBioButton: UIButton!
+    
+    @IBAction func changeBio(sender: AnyObject) {
+            changeBioButton.hidden = true
+            doneButton.hidden = false
+            self.bioTextView.editable = true
+    }
+
+    //done editing bio
     
     
+    @IBOutlet weak var doneButton: UIButton!
+    
+    
+    @IBAction func doneButtonClicked(sender: AnyObject) {
+        changeBioButton.hidden = false
+        doneButton.hidden = true
+        self.bioTextView.editable = false
+        self.dataRef.child("user").child(user!.uid).child("bio").setValue(bioTextView.text)
+    }
+    
+
+    
+    
+
     
 }

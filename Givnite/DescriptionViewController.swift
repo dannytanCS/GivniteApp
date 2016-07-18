@@ -34,6 +34,8 @@ class DescriptionViewController: UIViewController, UITextFieldDelegate, UITextVi
     var imageIndex: Int = 0
     
     var maxImages: Int = 0
+    
+    var imageDict = [UIImage:AnyObject]()
 
     
     
@@ -153,7 +155,7 @@ class DescriptionViewController: UIViewController, UITextFieldDelegate, UITextVi
     
     
     
-    
+    //changes the keyboard
     
     
     func keyboardWillHide(sender: NSNotification) {
@@ -190,6 +192,13 @@ class DescriptionViewController: UIViewController, UITextFieldDelegate, UITextVi
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        if bookName.text != "" && bookPrice.text != "" {
+            doneButton.hidden = false
+        }
+        
+        if bookName.text == "" || bookPrice.text == "" {
+            doneButton.hidden = true
+        }
         return true
     }
     
@@ -240,7 +249,9 @@ class DescriptionViewController: UIViewController, UITextFieldDelegate, UITextVi
                     self.imageNameList.append("\(key)")
                 }
                 
-                for imagename in self.imageNameList {
+                for image in itemDictionary {
+                    
+                    let imagename = image.key
                     
                     let profilePicRef = self.storageRef.child(self.imageName).child("\(imagename).jpg")
                     //sets the image on profile
@@ -250,9 +261,20 @@ class DescriptionViewController: UIViewController, UITextFieldDelegate, UITextVi
                             return
                         } else {
                             if (data != nil){
-                                self.imageList.append(UIImage(data:data!)!)
+                                
+                                self.imageDict[UIImage(data:data!)!] = image.value
                             }
                         }
+                        
+                        //change image dictionary into sorted image array
+                        var sortedTuples = self.imageDict.sort({ (a, b) in (a.1 as! Double) < (b.1 as! Double) })
+                        
+                        for tuple in sortedTuples {
+                            if sortedTuples.count == self.imageNameList.count {
+                                self.imageList.append(tuple.0)
+                            }
+                        }
+
                         self.maxImages  = self.imageList.count - 1
                         self.pageControl.currentPage = 0
                         self.pageControl.numberOfPages = self.maxImages + 1
@@ -358,6 +380,8 @@ class DescriptionViewController: UIViewController, UITextFieldDelegate, UITextVi
         }
         view.endEditing(true)
     }
+    
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

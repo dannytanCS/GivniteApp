@@ -215,8 +215,10 @@ class SchoolViewController: UIViewController, UITextFieldDelegate {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
         if (Major != nil){
+            self.Major.delegate = self
             self.GraduationYear.delegate = self
         }
+
     }
 
     func dismissKeyboard() {

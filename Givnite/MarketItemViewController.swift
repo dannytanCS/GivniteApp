@@ -64,8 +64,9 @@ class MarketItemViewController: UIViewController {
         databaseRef.child("marketplace").child(imageName!).observeSingleEventOfType(.Value, withBlock: { (snapshot)
             in
             
-            let bookDescription = snapshot.value!["description"] as! String
-            self.bookDescription.text = bookDescription
+            if let bookDescription = snapshot.value!["description"] as? String {
+                self.bookDescription.text = bookDescription
+            }
             
             let itemDictionary = snapshot.value!["images"] as! NSDictionary
 
